@@ -1,0 +1,28 @@
+[package]
+name = "adp-runtime"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+adp-core = { path = "../adp-core" }
+tokio = { workspace = true, features = ["full", "process", "time"] }
+tracing = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+ulid = { workspace = true }
+chrono = { workspace = true }
+async-trait = "0.1"
+
+# Sandboxing
+wasmtime = { version = "25.0", features = ["component-model"] }
+wasmtime-wasi = "25.0"
+
+# Capabilities
+cap-std = "3.0"
+
+[dev-dependencies]
+tokio-test = "0.4"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }

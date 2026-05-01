@@ -1,0 +1,13 @@
+syntax = "proto3";
+package adp.core.v1;
+
+import "google/protobuf/timestamp.proto";
+
+message Agent {
+  string id = 1;
+  repeated string capabilities = 2;
+  bytes metadata = 3;               // JSON
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+  google.protobuf.Timestamp deleted_at = 6;
+}

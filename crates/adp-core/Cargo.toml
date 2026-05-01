@@ -1,0 +1,25 @@
+[package]
+name = "adp-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+tokio = { workspace = true, features = ["full", "test-util"] }
+tracing = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+ulid = { workspace = true }
+chrono = { workspace = true }
+async-trait = "0.1"
+
+# Persistence
+libsql = "0.6"
+refinery = { version = "0.8", features = ["rusqlite"] }
+rusqlite = { version = "0.32", features = ["bundled"] }
+
+[dev-dependencies]
+tokio-test = "0.4"
+proptest = "1.5"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }

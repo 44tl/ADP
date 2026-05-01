@@ -1,0 +1,26 @@
+syntax = "proto3";
+package adp.core.v1;
+
+import "adp/core/v1/task.proto";
+import "google/protobuf/timestamp.proto";
+
+// Immutable audit event. Every state transition produces one.
+message Event {
+  string id = 1;                    // ULID
+  string task_id = 2;
+  EventType event_type = 3;
+  TaskState from_state = 4;
+  TaskState to_state = 5;
+  bytes payload = 6;                // JSON
+  google.protobuf.Timestamp created_at = 7;
+}
+
+enum EventType {
+  EVENT_TYPE_UNSPECIFIED = 0;
+  EVENT_TYPE_STATE_TRANSITION = 1;
+  EVENT_TYPE_SUBTASK_CREATED = 2;
+  EVENT_TYPE_DELEGATION_CREATED = 3;
+  EVENT_TYPE_DELEGATION_COMPLETED = 4;
+  EVENT_TYPE_RETRY_TRIGGERED = 5;
+  EVENT_TYPE_CANCELLED = 6;
+}

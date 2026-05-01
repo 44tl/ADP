@@ -1,0 +1,25 @@
+# ADP Default Configuration
+# Override via ~/.adp/config.toml or environment variables.
+
+[database]
+path = "~/.adp/adp.db"
+
+[server]
+grpc_addr = "127.0.0.1:50051"
+rest_addr = "127.0.0.1:8080"
+websocket_addr = "127.0.0.1:8081"
+
+[inference]
+model_path = "~/.adp/models/default.gguf"
+context_size = 4096
+gpu_layers = 0
+threads = 0  # 0 = auto (num_cpus)
+
+[sandbox]
+default_fuel = 10_000_000_000
+default_memory_pages = 512
+default_timeout_seconds = 300
+
+[logging]
+level = "info"
+format = "json"  # "json" or "pretty"

@@ -1,0 +1,64 @@
+syntax = "proto3";
+package adp.core.v1;
+
+import "google/protobuf/timestamp.proto";
+
+// The atomic unit of work. Immutable identity; state managed by state machine.
+message Task {
+  string id = 1;                    // ULID
+  string parent_id = 2;             // empty if root task
+  TaskState state = 3;
+  string task_type = 4;
+  bytes context = 5;                // JSON blob
+  Strategy strategy = 6;
+  uint32 retry_count = 7;
+  uint32 max_retries = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+  google.protobuf.Timestamp completed_at = 11;
+  repeated string subtask_ids = 12;
+  string agent_id = 13;             // assigned agent (ULID)
+}
+
+enum TaskState {
+  TASK_STATE_UNSPECIFIED = 0;
+  TASK_STATE_PENDING = 1;
+  TASK_STATE_DELEGATED = 2;
+  TASK_STATE_EXECUTING = 3;
+  TASK_STATE_AWAITING_SUBTASKS = 4;
+  TASK_STATE_AGGREGATING = 5;
+  TASK_STATE_COMPLETED = 6;
+  TASK_STATE_FAILED = 7;
+  TASK_STATE_CANCELLED = 8;
+}
+
+// Delegation strategy. Oneof for strategy-specific configuration.
+message Strategy {
+  oneof kind {
+    SingleStrategy single = 1;
+    BroadcastStrategy broadcast = 2;
+    VoteStrategy vote = 3;
+    PipelineStrategy pipeline = 4;
+    MapReduceStrategy map_reduce = 5;
+  }
+}
+
+message SingleStrategy {}
+
+message BroadcastStrategy {
+  uint32 max_agents = 1;
+}
+
+message VoteStrategy {
+  // Quorum as a percentage (0-100). Default 67 (2/3).
+  uint32 quorum_percent = 1;
+  uint32 max_agents = 2;
+}
+
+message PipelineStrategy {
+  repeated string stages = 1;
+}
+
+message MapReduceStrategy {
+  uint32 map_count = 1;
+}
