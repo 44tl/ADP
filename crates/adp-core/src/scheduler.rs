@@ -515,14 +515,23 @@ impl<S: TaskStore, E: EventStore> DagScheduler<S, E> {
         Ok(true)
     }
 
-    /// Persist task update and associated events.
-    ///
-    /// TODO: In production with libSQL, wrap this in a transaction.
+/// Persist task update and associated events.
     async fn persist_transition(&self, task: &Task, events: &[Event]) -> Result<()> {
+        // In production with libSQL, wrap this in a transaction.
+        let tx = self.task_store
+            .conn
+            .transaction()
+            .await
+            .map_err(|e| AdpError::StoreError(format!("failed to begin transaction: {e}")))?;
+
         self.task_store.update(task).await?;
         for event in events {
             self.event_store.append(event).await?;
         }
+        
+        tx.commit()
+            .await
+            .map_err(|e| AdpError::StoreError(format!("failed to commit transaction: {e}")))?;
+            
         Ok(())
     }
-}
